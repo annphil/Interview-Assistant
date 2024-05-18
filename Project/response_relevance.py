@@ -27,11 +27,36 @@ def calculate_similarity(question, response):
 
     return similarity_score
 
+from openai import AzureOpenAI
+
+ENDPOINT = "https://polite-ground-030dc3103.4.azurestaticapps.net/api/v1"
+
+API_VERSION = "2024-02-01"
+MODEL_NAME = "gpt-35-turbo"
+
+client = AzureOpenAI(
+    azure_endpoint=ENDPOINT,
+    api_key=API_KEY,
+    api_version=API_VERSION,
+)
+
+# Define interview questions
+question = {"role": "user", "content": "What is your greatest strength?"}
+
+# Generate responses for interview questions
+completion = client.chat.completions.create(
+    model=MODEL_NAME,
+    messages=[{"role": "system", "content": "You are an interviewee who is a fresher who has to answer the following questions."}, question],
+)
+assistant_response = completion.choices[0].message.content
+
+print(assistant_response)
+
 # Example usage
 # question = "Are you a self-motivator?"
 # response = "Absolutely. For me, internal motivation works far more than external motivation ever could."
-question = "What is LSTM?"
-response = "How do u do"
+# question = "What is LSTM?"
+response = "Hardwork and smartwork. Not hardwork, competitive mentality"
 
-similarity_score = calculate_similarity(question, response)
+similarity_score = calculate_similarity(assistant_response, response)
 print("Similarity Score:", similarity_score)
